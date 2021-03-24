@@ -113,7 +113,7 @@ end
 
 for i=1:Nx
     for j=1:Ny
-        VD(i,j)=V(i,j,Nz);
+        VD(i,j)=V(i,j,40);
     end
 end
 
@@ -129,12 +129,14 @@ colorbar;
 % %Cálculo do Campo Elétrico
 for i=1:Nx
    for j=1:Ny
-      if i<Nx
+      if i<Nx/2
          Ex(i,j)=(VD(i,j)-VD(i+1,j))/dx;
+      if i>Nx/2
+          
       else
          Ex(i,j)=(VD(i,j)-VxNx)/dx;
       end
-		if j<Ny
+		if j<Ny/2
          Ey(i,j)=(VD(i,j)-V(i,j+1))/dy;
       else
           Ey(i,j)=(VD(i,j)-VyNy)/dy;
@@ -156,7 +158,7 @@ colorbar;
 
 %Comparação com modelo analítico
 % Potencial no eixo x;
-j=40;
+j=10;
 for i=1:Nx
    Veixox(i)=VD(i,j);
    Vteixox(i)=0;
@@ -171,7 +173,7 @@ for i=1:Nx
 end
 
 %Potencial no eixo y;
-i=40;
+i=10;
 for j=1:Ny
    Veixoy(j)=VD(i,j);
    Vteixoy(j)=0;
