@@ -1,5 +1,5 @@
 import numpy as np  # para trabalhar numericamente
-# import matplotlib.pyplot as plt  # para plotar
+import matplotlib.pyplot as plt  # para plotar
 import sympy as sp
 
 def Bhaskara(a,b,c):
@@ -71,6 +71,12 @@ def Fibonacci(n):
         elemento = int(elemento)
     return elemento, soma
 
-# x = np.arange(0, 11)
-# a = list(map(Fibonacci, x))         #Função 'map' faz um sequência de leituras
-# print(a)
+def n_esima_raiz_unidade(n):
+
+    r = np.zeros([n])
+    for i in range(1, n+1):
+        r[i-1] = np.cos(2*np.pi/i)+np.complex(1j)*np.sin(2*np.pi/i)
+    return r
+
+raizes = n_esima_raiz_unidade(2)
+print(f'As raizes são:\n{raizes}')
