@@ -2,12 +2,48 @@ clc;
 clear all;
 close all;
 
-%Dimensões do problema
+%Cálculo Analítico %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Lx = 0.1; Ly = 0.1; Lz = 0.1;
-Nx = 40; Ny = 40; Nz = 40;
-dx = Lx/Nx; dy = Ly/Ny; dz = Lz/Nz;
+Nx = 50; Ny = 50; Nz = 50;
+dxa=Lx/(Nx-1); dya=Ly/(Ny-1);
 Vo = 1;
 N=150; M=150;
+
+for i=1:Nx
+    xa(i)=(i-1)*dxa;
+end
+for j=1:Ny
+    ya(j)=(j-1)*dya;
+end
+
+for i=1:Nx
+    for j=1:Ny
+        Van(i,j)=0;
+        for n=1:N
+            for m=1:M
+                %Definindo Knm
+                Knm1 = (1-cos(n*pi/2))*(1-cos(m*pi/2));
+                Knm2 = (cos(n*pi)-cos(n*pi/2))*(1-cos(m*pi/2));
+                Knm3 = (1-cos(n*pi/2))*(cos(m*pi)-cos(m*pi/2));
+                Knm4 = (cos(n*pi)-cos(n*pi/2))*(cos(m*pi)-cos(m*pi/2));
+                Knm = 2*Vo/(n*m*pi^2)*(Knm1+Knm2+Knm3+Knm4);
+                Van(i,j) = Van(i,j)+Knm*(sin(n*pi*xa(i)/Lx)*sin(m*pi*ya(j)/Ly));
+            end
+        end
+    end
+end
+
+% figure(1);
+% surf(xa,ya,Van);
+% xlabel('x (m)');
+% ylabel('y (m)');
+% zlabel('V (V)');
+% title('Distribuição do Potêncial Elétrico - Analítico')
+% colorbar;
+
+%Cálculo Numérico %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Dimensões do problema
+dx = Lx/Nx; dy = Ly/Ny; dz = Lz/Nz;
 
 %Condições de contorno
 Vx = 0; Vy = 0; Vz = 0;
@@ -118,112 +154,111 @@ for i=1:Nx
 end
 
 %Gráfico de superfície
-figure(1)
-surf(x,y,VD);
-xlabel('x(m)');
-ylabel('y(m)');
-zlabel('V(V)');
-title('Distribuição de Potencial Elétrico - Numérico');
-colorbar;
+% figure(2)
+% surf(x,y,VD);
+% xlabel('x(m)');
+% ylabel('y(m)');
+% zlabel('V(V)');
+% title('Distribuição de Potencial Elétrico - Numérico');
+% colorbar;
 
 %Cálculo do Campo Elétrico
-% j=Ny/4;
-% for i=1:Nx
-%    for k=1:Nz
-%       if i<Nx
-%          Ex(i,j,k)=(V(i,j,k)-V(i+1,j,k))/dx;
-%       else
-%          Ex(i,j,k)=(V(i,j,k)-VxNx)/dx;
-%       end
-% 		if k<Nz
-%          Ez(i,j,k)=(V(i,j,k)-V(i,j,k+1))/dz;
-%       else
-%           Ez(i,j,k)=(V(i,j,k)-VyNy)/dz;
-%       end
-%       unx(i,j,k)=Ex(i,j,k)/sqrt(Ex(i,j,k)^2+Ez(i,j,k)^2);
-%       unz(i,j,k)=Ez(i,j,k)/sqrt(Ex(i,j,k)^2+Ez(i,j,k)^2);
-%    end
-% end
-% 
-% for i=1:Nx
-%     for k=1:Ny
-%         Vxz(i,k)=V(i,Ny/4,k);
-%     end
-% end
-% 
-% figure(2)
+j=Ny/4+0.5;
+for i=1:Nx
+   for k=1:Nz
+      if i<Nx
+         Ex(i,j,k)=(V(i,j,k)-V(i+1,j,k))/dx;
+      else
+         Ex(i,j,k)=(V(i,j,k)-VxNx)/dx;
+      end
+		if k<Nz
+         Ez(i,j,k)=(V(i,j,k)-V(i,j,k+1))/dz;
+      else
+          Ez(i,j,k)=(V(i,j,k)-VyNy)/dz;
+      end
+      unx(i,k)=Ex(i,j,k)/sqrt(Ex(i,j,k)^2+Ez(i,j,k)^2);
+      unz(i,k)=Ez(i,j,k)/sqrt(Ex(i,j,k)^2+Ez(i,j,k)^2);
+   end
+end
+
+for i=1:Nx
+    for k=1:Ny
+        Vxz(i,k)=V(i,Ny/4+0.5,k);
+    end
+end
+
+% figure(3)
 % contour(x,z,Vxz);
 % hold on
 % quiver(x,z,unz,unx);
 % hold off
-% xlabel('x(m)');
-% ylabel('z(m)');
+% xlabel('z(m)');
+% ylabel('x(m)');
 % title('Linhas Equipotenciais');
 % colorbar;
 
-%Cálculo Analítico %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-dxa=Lx/(Nx-1); dya=Ly/(Ny-1);
-for i=1:Nx
-    xa(i)=(i-1)*dxa;
-end
-for j=1:Ny
-    ya(j)=(j-1)*dya;
-end
-
-for i=1:Nx
-    for j=1:Ny
-        Va(i,j)=0;
-        for n=1:N
-            for m=1:M
-                %Definindo Knm
-                Knm1=(1-cos(n*pi/2))*(1-cos(m*pi/2));
-                Knm2=(cos(n*pi)-cos(n*pi/2))*(1-cos(m*pi/2));
-                Knm3=(1-cos(n*pi/2))*(cos(m*pi)-cos(m*pi/2));
-                Knm4=(cos(n*pi)-cos(n*pi/2))*(cos(m*pi)-cos(m*pi/2));
-                Knm=2*Vo/(n*m*pi^2)*(Knm1+Knm2+Knm3+Knm4);
-                Va(i,j)=Va(i,j)+Knm*(sin(n*pi*xa(i)/Lx)*sin(m*pi*ya(j)/Ly));
-            end
-        end
-    end
-end
-
-figure(3);
-surf(xa,ya,Va);
-xlabel('x (m)');
-ylabel('y (m)');
-zlabel('V (V)');
-title('Distribuição do Potêncial Elétrico - Analítico');
-colorbar;
-
 %Comparação com modelo analítico
 % Potencial no eixo x;
-j=10;
+j=13;
 for i=1:Nx
    Veixox(i)=VD(i,j);
 %    Vteixox(i)=0;
-   Vteixox(i)= Va(i,j);
+   Vteixox(i)= Van(i,j);
 end
 
 %Potencial no eixo y;
-i=10;
+i=13;
 for j=1:Ny
    Veixoy(j)=VD(i,j);
 %    Vteixoy(j)=0;
-   Vteixoy(j)= Va(i,j);
+   Vteixoy(j)= Van(i,j);
 end
 
-figure(4)
-subplot(2,1,1)
-plot(x,Veixox,'k-',x,Vteixox,'ro');
-xlabel('x(m)');
-ylabel('V(V)');
-title('Potencial Elétrico ao longo do eixo j=10');
+% figure(4)
+% subplot(2,1,1)
+% plot(x,Veixox,'k-',x,Vteixox,'ro');
+% xlabel('x(m)');
+% ylabel('V(V)');
+% title('Potencial Elétrico ao longo do eixo j=13');
+% grid on;
+% legend('Numérico','Analítico');
+% subplot(2,1,2)
+% plot(y,Veixoy,'k-',y,Vteixoy,'ro');
+% xlabel('y(m)');
+% ylabel('V(V)');
+% title('Potencial Elétrico ao longo do eixo i=13');
+% grid on;
+% legend('Numérico','Analítico');
+
+%Comparando os três métodos %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+arquivo_femm = load('Dados_femm_2.txt');
+femm_x = Nz/10*arquivo_femm(:,1);
+femm_y = arquivo_femm(:, 2);
+
+VDcomp = zeros(1,Nz);
+Vancomp = zeros(1,Nz);
+i=13; j=13;
+for k=1:Nz
+    VDcomp(k) = VDcomp(k)+ V(i,j,k);
+    for n=1:N
+        for m=1:M
+            %Definindo Knm
+            Knm1 = (1-cos(n*pi/2))*(1-cos(m*pi/2));
+            Knm2 = (cos(n*pi)-cos(n*pi/2))*(1-cos(m*pi/2));
+            Knm3 = (1-cos(n*pi/2))*(cos(m*pi)-cos(m*pi/2));
+            Knm4 = (cos(n*pi)-cos(n*pi/2))*(cos(m*pi)-cos(m*pi/2));
+            Knm = 2*Vo/(n*m*pi^2)*(Knm1+Knm2+Knm3+Knm4);
+            Vancomp(k) = Vancomp(k)+Knm*(sin(n*pi*i/Lx)*sin(m*pi*j/Ly));
+            end
+    end
+end
+
+k = 1:Nz;
+figure(5)
+plot(k,Vancomp,'g*');
+% plot(femm_x,femm_y,'r',k,VDcomp,'bo',k,Vancomp,'g*');
 grid on;
-legend('Numérico','Analítico');
-subplot(2,1,2)
-plot(y,Veixoy,'k-',y,Vteixoy,'ro');
-xlabel('y(m)');
-ylabel('V(V)');
-title('Potencial Elétrico ao longo do eixo i=10');
-grid on;
-legend('Numérico','Analítico');
+title('Comparação entre Métodos');
+xlabel('Eixo x');
+ylabel('Eixo y');
+legend('Femm','Numérico')
