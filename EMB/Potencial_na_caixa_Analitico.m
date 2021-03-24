@@ -2,12 +2,11 @@ clc;
 clear all;
 close all;
 
-Lx=0.1; Ly=0.1; Lz=0.1;
+Lx=0.1; Ly=0.1;
 Nx=50; Ny=50;
 dx=Lx/(Nx-1); dy=Ly/(Ny-1);
 Vo=1;
 N=150; M=150;
-z=Lz;
 
 for i=1:Nx
     x(i)=(i-1)*dx;
