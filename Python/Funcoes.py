@@ -71,12 +71,37 @@ def Fibonacci(n):
         elemento = int(elemento)
     return elemento, soma
 
-def n_esima_raiz_unidade(n):
-
-    r = np.zeros([n])
+def n_esima_raiz_unidade(n, plotar = False):
+    r, r_real, r_imaginario = np.zeros([n]), np.zeros([n]), np.zeros([n])
+    r = np.complex_(r)
     for i in range(1, n+1):
         r[i-1] = np.cos(2*np.pi/i)+np.complex(1j)*np.sin(2*np.pi/i)
+        r_real[i-1] = np.cos(2*np.pi/i)
+        print(r_real[i-1])
+        r_imaginario[i-1] = np.sin(2*np.pi/i)
+        print(r_imaginario[i-1])
+    if plotar:
+        x = np.arange(-1, 1, 0.001)
+        y = np.sqrt(1-x**2)
+        plt.figure(1)
+        plt.plot(x, y, color='k', label='$x^2+y^2=1$')
+        plt.plot(x,-y, color='k')
+        plt.plot(r_real, r_imaginario, 'ro', label='Raízes')
+        plt.grid(True)
+        plt.legend()
+        plt.show()
     return r
 
-raizes = n_esima_raiz_unidade(2)
+raizes = n_esima_raiz_unidade(5, True)
 print(f'As raizes são:\n{raizes}')
+
+# r_real, r_imaginario = np.cos(2*np.pi/1), np.sin(2*np.pi/1)
+# x = np.arange(-1, 1, 0.001)
+# y = np.sqrt(1-x**2)
+# plt.figure(1)
+# plt.plot(x, y, color='k', label='$x^2+y^2=1$')
+# plt.plot(x,-y, color='k')
+# plt.plot(r_real, r_imaginario, 'ro', label='Raízes')
+# plt.grid(True)
+# plt.legend()
+# plt.show()
