@@ -1,6 +1,7 @@
 import numpy as np  # para trabalhar numericamente
 import matplotlib.pyplot as plt  # para plotar
 import sympy as sp
+import cmath as cmt
 
 def Bhaskara(a,b,c):
     raiz1 = raiz2 = 0
@@ -73,35 +74,21 @@ def Fibonacci(n):
 
 def n_esima_raiz_unidade(n, plotar = False):
     r, r_real, r_imaginario = np.zeros([n]), np.zeros([n]), np.zeros([n])
-    r = np.complex_(r)
+    r, k, r_abs, r_ang = np.complex_(r), np.arange(0, n), np.zeros([n]), np.zeros([n])
     for i in range(1, n+1):
-        r[i-1] = np.cos(2*np.pi/i)+np.complex(1j)*np.sin(2*np.pi/i)
-        r_real[i-1] = np.cos(2*np.pi/i)
-        print(r_real[i-1])
-        r_imaginario[i-1] = np.sin(2*np.pi/i)
-        print(r_imaginario[i-1])
+        r[i-1] = np.cos(2*k[i-1]*np.pi/i)+1j*np.sin(2*k[i-1]*np.pi/i)
+        r_real[i-1], r_imaginario[i-1] = np.cos(2*k[i-1]*np.pi/i), np.sin(2*k[i-1]*np.pi/i)
     if plotar:
-        x = np.arange(-1, 1, 0.001)
-        y = np.sqrt(1-x**2)
+        t = np.arange(0, 2*np.pi, 0.001)
+        x = np.cos(t)
+        y = np.sin(t)
         plt.figure(1)
-        plt.plot(x, y, color='k', label='$x^2+y^2=1$')
-        plt.plot(x,-y, color='k')
-        plt.plot(r_real, r_imaginario, 'ro', label='Raízes')
+        plt.plot(x, y, color='k', label='$y=\pm\sqrt{1-x^2}$')
+        plt.plot(r_real, r_imaginario, 'ro', label='Raizes')
         plt.grid(True)
         plt.legend()
         plt.show()
     return r
 
-raizes = n_esima_raiz_unidade(5, True)
+raizes = n_esima_raiz_unidade(4, True)
 print(f'As raizes são:\n{raizes}')
-
-# r_real, r_imaginario = np.cos(2*np.pi/1), np.sin(2*np.pi/1)
-# x = np.arange(-1, 1, 0.001)
-# y = np.sqrt(1-x**2)
-# plt.figure(1)
-# plt.plot(x, y, color='k', label='$x^2+y^2=1$')
-# plt.plot(x,-y, color='k')
-# plt.plot(r_real, r_imaginario, 'ro', label='Raízes')
-# plt.grid(True)
-# plt.legend()
-# plt.show()
