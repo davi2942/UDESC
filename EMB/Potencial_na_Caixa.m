@@ -231,7 +231,7 @@ end
 % legend('Numérico','Analítico');
 
 %Comparando os três métodos %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-arquivo_femm = load('Dados_femm_2.txt');
+arquivo_femm = load('Dados_femm.txt');
 femm_x = Nz/10*arquivo_femm(:,1);
 femm_y = arquivo_femm(:, 2);
 
