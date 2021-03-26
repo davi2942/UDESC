@@ -4,10 +4,10 @@ close all;
 
 %Cálculo Analítico %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Lx = 0.1; Ly = 0.1; Lz = 0.1;
-Nx = 300; Ny = 300; Nz = 300;
+Nx = 50; Ny = 50; Nz = 50;
 dxa=Lx/(Nx-1); dya=Ly/(Ny-1); dza=Lz/(Nz-1);
 Vo = 1;
-N=300; M=300;
+N=150; M=150;
 
 for i=1:Nx
     xa(i)=(i-1)*dxa;
@@ -207,7 +207,7 @@ quiver(x,z,unz,unx);
 hold off
 xlabel('z(m)');
 ylabel('x(m)');
-title('Linhas Equipotenciais e Mapa Vetorial');
+title('Linhas Equipotenciais');
 colorbar;
 
 %Comparação com modelo analítico
