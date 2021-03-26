@@ -176,7 +176,7 @@ title('Distribuição de Potencial Elétrico - Numérico');
 colorbar;
 
 %Cálculo do Campo Elétrico
-j=Ny/4+0.5;
+j=Ny/4;
 for i=1:Nx
    for k=1:Nz
       if i<Nx
@@ -196,7 +196,7 @@ end
 
 for i=1:Nx
     for k=1:Ny
-        Vxz(i,k)=V(i,Ny/4+0.5,k);
+        Vxz(i,k)=V(i,Ny/4,k);
     end
 end
 
@@ -212,18 +212,16 @@ colorbar;
 
 %Comparação com modelo analítico
 % Potencial no eixo x;
-j=13;
+j=Ny/4;
 for i=1:Nx
    Veixox(i)=VD(i,j);
-%    Vteixox(i)=0;
    Vteixox(i)= Vanz(i,j);
 end
 
 %Potencial no eixo y;
-i=13;
+i=Nx/4;
 for j=1:Ny
    Veixoy(j)=VD(i,j);
-%    Vteixoy(j)=0;
    Vteixoy(j)= Vanz(i,j);
 end
 
@@ -232,14 +230,14 @@ subplot(2,1,1)
 plot(x,Veixox,'k-',x,Vteixox,'ro');
 xlabel('x(m)');
 ylabel('V(V)');
-title('Potencial Elétrico ao longo do eixo j=13');
+title('Potencial Elétrico ao longo do eixo j=75');
 grid on;
 legend('Numérico','Analítico');
 subplot(2,1,2)
 plot(y,Veixoy,'k-',y,Vteixoy,'ro');
 xlabel('y(m)');
 ylabel('V(V)');
-title('Potencial Elétrico ao longo do eixo i=13');
+title('Potencial Elétrico ao longo do eixo i=75');
 grid on;
 legend('Numérico','Analítico');
 
@@ -250,15 +248,15 @@ femm_y = arquivo_femm(:, 2);
 
 VDcomp = zeros(1,Nz);
 Vancomp = zeros(1,Nz);
-i=13; j=13;
+i=Nx/4; j=Ny/4;
 for k=1:Nz
     VDcomp(k) = VDcomp(k)+ V(i,j,k); %Potencial Numérico
     Vancomp(k) = Vancomp(k)+ Van(i,j,k); %Potencial Analítico
 end
 
-k = 1:Nz;
+k=1:Nz;
 figure(5)
-plot(femm_x,femm_y,'r',k,VDcomp,'bo',k,Vancomp,'g*');
+plot(femm_x,femm_y,'r',k,VDcomp,'bo',k,Vancomp,'k*');
 grid on;
 title('Comparação entre os Três Métodos');
 xlabel('Eixo x');
