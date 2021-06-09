@@ -23,6 +23,10 @@ def Bhaskara(a,b,c):
         raiz2 = complex((-b-np.sqrt(Delta))/(2*a))
     return raiz1, raiz2
 
+# kp, W, L, Vtp, RB = 50e-6, 60e-6, 10e-6, 1.5, 56e3
+# raizes = Bhaskara(1, 2*(L/(kp*W*RB)-Vtp), Vtp**2-10*L/(kp*W*RB))
+# print(f'As raizes são:\n{raizes}')
+
 def Fatorial(n):
     fat=i=1
     if n==0 or n==1:
@@ -73,22 +77,26 @@ def Fibonacci(n):
     return elemento, soma
 
 def n_esima_raiz_unidade(n, plotar = False):
-    r, r_real, r_imaginario = np.zeros([n]), np.zeros([n]), np.zeros([n])
-    r, k, r_abs, r_ang = np.complex_(r), np.arange(0, n), np.zeros([n]), np.zeros([n])
-    for i in range(1, n+1):
-        r[i-1] = np.cos(2*k[i-1]*np.pi/i)+1j*np.sin(2*k[i-1]*np.pi/i)
-        r_real[i-1], r_imaginario[i-1] = np.cos(2*k[i-1]*np.pi/i), np.sin(2*k[i-1]*np.pi/i)
-    if plotar:
-        t = np.arange(0, 2*np.pi, 0.001)
-        x = np.cos(t)
-        y = np.sin(t)
-        plt.figure(1)
-        plt.plot(x, y, color='k', label='$y=\pm\sqrt{1-x^2}$')
-        plt.plot(r_real, r_imaginario, 'ro', label='Raizes')
-        plt.grid(True)
-        plt.legend()
-        plt.show()
+    if(n <= 0):
+        print(f'Não existe esta raíz')
+        r = None
+    else:
+        r, r_real, r_imaginario = np.zeros([n]), np.zeros([n]), np.zeros([n])
+        r, k, r_abs, r_ang = np.complex_(r), np.arange(0, n), np.zeros([n]), np.zeros([n])
+        for i in range(0, n):
+            r[i] = np.cos(2*k[i]*np.pi/n)+1j*np.sin(2*k[i]*np.pi/n)
+            r_real[i], r_imaginario[i] = np.cos(2*k[i]*np.pi/n), np.sin(2*k[i]*np.pi/n)
+        if plotar:
+            t = np.arange(0, 2*np.pi, 0.001)
+            x = np.cos(t)
+            y = np.sin(t)
+            plt.figure(1)
+            plt.plot(x, y, color='k', label='$y=\pm\sqrt{1-x^2}$')
+            plt.plot(r_real, r_imaginario, 'ro', label='Raizes')
+            plt.grid(True)
+            plt.legend()
+            plt.show()
     return r
 
-raizes = n_esima_raiz_unidade(4, True)
+raizes = n_esima_raiz_unidade(3, True)
 print(f'As raizes são:\n{raizes}')
