@@ -4,10 +4,10 @@ close all;
 
 %Cálculo Analítico %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Lx = 0.1; Ly = 0.1; Lz = 0.1;
-Nx = 300; Ny = 300; Nz = 300;
+Nx = 52; Ny = 52; Nz = 52;
 dxa=Lx/(Nx-1); dya=Ly/(Ny-1); dza=Lz/(Nz-1);
 Vo = 1;
-N=300; M=300;
+N=100; M=100;
 
 for i=1:Nx
     xa(i)=(i-1)*dxa;
@@ -18,8 +18,6 @@ end
 for k=1:Nz
     za(k)=(k-1)*dza;
 end
-
-% Van = zeros(Nx, Ny, Nz);
 
 for i=1:Nx
     for j=1:Ny
@@ -45,14 +43,6 @@ for i=1:Nx
         Vanz(i,j)=Van(i,j,Nz);
     end
 end
-
-figure(1);
-surf(xa,ya,Vanz);
-xlabel('x (m)');
-ylabel('y (m)');
-zlabel('V (V)');
-title('Distribuição do Potêncial Elétrico - Analítico')
-colorbar;
 
 %Cálculo Numérico %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Dimensões do problema
@@ -166,15 +156,6 @@ for i=1:Nx
     end
 end
 
-% Gráfico de superfície
-figure(2)
-surf(x,y,VD);
-xlabel('x(m)');
-ylabel('y(m)');
-zlabel('V(V)');
-title('Distribuição de Potencial Elétrico - Numérico');
-colorbar;
-
 %Cálculo do Campo Elétrico
 j=Ny/4;
 for i=1:Nx
@@ -200,16 +181,6 @@ for i=1:Nx
     end
 end
 
-figure(3)
-contour(x,z,Vxz);
-hold on
-quiver(x,z,unz,unx);
-hold off
-xlabel('z(m)');
-ylabel('x(m)');
-title('Linhas Equipotenciais e Mapa Vetorial');
-colorbar;
-
 %Comparação com modelo analítico
 % Potencial no eixo x;
 j=Ny/4;
@@ -225,22 +196,6 @@ for j=1:Ny
    Vteixoy(j)= Vanz(i,j);
 end
 
-figure(4)
-subplot(2,1,1)
-plot(x,Veixox,'k-',x,Vteixox,'ro');
-xlabel('x(m)');
-ylabel('V(V)');
-title('Potencial Elétrico ao longo do eixo j=75');
-grid on;
-legend('Numérico','Analítico');
-subplot(2,1,2)
-plot(y,Veixoy,'k-',y,Vteixoy,'ro');
-xlabel('y(m)');
-ylabel('V(V)');
-title('Potencial Elétrico ao longo do eixo i=75');
-grid on;
-legend('Numérico','Analítico');
-
 %Comparando os três métodos %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 arquivo_femm = load('Dados_femm.txt');
 femm_x = Nz/10*arquivo_femm(:,1);
@@ -255,6 +210,54 @@ for k=1:Nz
 end
 
 k=1:Nz;
+
+% Gráfico de superfície
+figure(1);
+surf(xa,ya,Vanz);
+xlabel('x (m)');
+ylabel('y (m)');
+zlabel('V (V)');
+title('Distribuição do Potêncial Elétrico - Analítico')
+colorbar;
+
+% Gráfico de superfície
+figure(2)
+surf(x,y,VD);
+xlabel('x(m)');
+ylabel('y(m)');
+zlabel('V(V)');
+title('Distribuição de Potencial Elétrico - Numérico');
+colorbar;
+
+% Gráfico das linhas equipotenciais
+figure(3)
+contour(x,z,Vxz);
+hold on
+quiver(x,z,unz,unx);
+hold off
+xlabel('z(m)');
+ylabel('x(m)');
+title('Linhas Equipotenciais e Mapa Vetorial');
+colorbar;
+
+% Potencial ao longo de um eixo
+figure(4)
+subplot(2,1,1)
+plot(x,Veixox,'k-',x,Vteixox,'ro');
+xlabel('x(m)');
+ylabel('V(V)');
+title('Potencial Elétrico ao longo do eixo j=50');
+grid on;
+legend('Numérico','Analítico');
+subplot(2,1,2)
+plot(y,Veixoy,'k-',y,Vteixoy,'ro');
+xlabel('y(m)');
+ylabel('V(V)');
+title('Potencial Elétrico ao longo do eixo i=50');
+grid on;
+legend('Numérico','Analítico');
+
+% Gráfico de comparação entre os três métodos
 figure(5)
 plot(femm_x,femm_y,'r',k,VDcomp,'bo',k,Vancomp,'k*');
 grid on;

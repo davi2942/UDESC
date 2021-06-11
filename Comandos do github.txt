@@ -1,0 +1,8 @@
+Comandos:
+- git clone link (clona o diretório do nuvem para o pc e cria uma pasta com o mesmo nome que está no github)
+- git add .  (para salvar as alterações que foi feito no pc)
+- git commit -m "mensagem" (texto que vai aparecer quando no github)
+- git push (joga as alterações que tu fez para o github)
+- git checkout -b nome-alteração (cria uma branch nova para não trabalhar na master)
+- git push --set-upstream origin nome-alteração (para jovar o github como um push-request)
+- git pull (atualiza os arquivos da maquina com os arquivos que estão no github)
