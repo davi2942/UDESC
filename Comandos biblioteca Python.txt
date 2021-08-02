@@ -1,0 +1,13 @@
+Comandos para intalação de pacotes python via cmd.
+
+Instalar uma biblioteca:
+pip intall "Nome da biblioteca"
+
+Visualizar as bibliotecas instaladas:
+pip freeze
+
+Atualizar uma biblioteca:
+pip install --upgrade "Nome da biblioteca"
+
+Remover uma biblioteca:
+pip uninstall "Nome da biblioteca"
