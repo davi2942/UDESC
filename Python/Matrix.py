@@ -33,9 +33,9 @@ for i in range(1, N+1):
         if i+j == N+1:
             DS.append(A[i-1][j-1])
 
-print(f'Os elementos da Diagonal Principal são: {DP}')
-print(f'O traço da matriz é: {tr}')
-print(f'Os elementos da Diagonal Secundária são: {DS}')
+print(f'Os elementos da Diagonal Principal sao: {DP}')
+print(f'O traco da matriz eh: {tr}')
+print(f'Os elementos da Diagonal Secundaria sao: {DS}')
 
 # for i in range(0, 3):
 #     for j in range(0, 3):
