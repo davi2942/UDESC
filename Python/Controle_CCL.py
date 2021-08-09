@@ -52,32 +52,74 @@ elif (flag==2):
     plt.xlabel('Tempo [s]')
     plt.axis([min(tma), max(tma), min(yma), max(yma)+0.05*max(yma)])
     plt.legend()
+    
     plt.figure()
     ymf, tmf = cm.step(Ts)
-    plt.plot(tmf, ymf, label='$T(s)$') #resposta ao degrau unitário de malha fechada
+    plt.plot(tmf, ymf, label='$T(s)$') #resposta ao degrau unitário de malha fechada com controlador
     plt.grid(True)
+    tmf2 = np.zeros(len(tmf))
     for i in range(0, len(ymf)):
-        ymf[i] = ymf[i]
-        if (ymf[i]==max(ymf)):
-            tp = tmf[i]
-    plt.axvline(tp, ls='-.', color='red', label=f'$t_p=${round(tp, 3)}\n$y_p=${round(max(ymf), 3)}')
-    # plt.axvline(ts, ls='-.', color='blue', label=f'$t_s(2\%)=${round(ts, 3)}')
+        for j in range(i, len(ymf)):
+            if(round(ymf[-1], 2) == 0):
+                if((ymf[j]<0.02) and (ymf[j]>-0.02)):
+                    tmf2[j] = tmf[j]
+                else:
+                    tmf2 = np.zeros(len(tmf))
+            else:
+                if((ymf[j]<ymf[-1]+0.02*ymf[-1]) and (ymf[j]>ymf[-1]-0.02*ymf[-1])):
+                    tmf2[j] = tmf[j]
+                else:
+                    tmf2 = np.zeros(len(tmf))
+        if(max(ymf) == ymf[0]):
+            if (ymf[i]==min(ymf)):
+                tp = tmf[i]
+                yp = ymf[i]
+        else:
+            if (ymf[i]==max(ymf)):
+                tp = tmf[i]
+                yp = ymf[i]
+    for i in range(0, len(tmf)):
+        if(tmf2[i]>0):
+            ts = tmf2[i]
+            break
+    plt.axvline(tp, ls='-.', color='red', label=f'$t_p=${round(tp, 3)}\n$y_p=${round(yp, 3)}')
+    plt.axvline(ts, ls='-.', color='blue', label=f'$t_s(2\%)=${round(ts, 3)}')
     plt.title('Resposta ao Degrau Unitário de Malha Fechada com Controlador')
     plt.xlabel('Tempo [s]')
     plt.axis([min(tmf), max(tmf), min(ymf), max(ymf)+0.05*max(ymf)])
     plt.legend()
     ysc, tsc = cm.step(Ts_sc)
+    
     plt.figure()
-    plt.plot(tsc, ysc, label='$T(s)$')
+    plt.plot(tsc, ysc, label='$T(s)$') #resposta ao degrau unitário de malha fechada sem controlador
     plt.grid(True)
+    tsc2 = np.zeros(len(tsc))
     for i in range(0, len(ysc)):
-        ysc[i] = ysc[i]
-        if (ysc[i]==max(ysc)):
-            tp_sc = tsc[i]
-        if (ysc[i]-ysc[-1]<=0.02):
-            ts = tsc[i]
-    plt.axvline(tp_sc, ls='-.', color='red', label=f'$t_p=${round(tp_sc, 3)}\n$y_p=${round(max(ysc), 3)}')
-    plt.axvline(ts, ls='-.', color='blue', label=f'$t_s(2\%)=${round(ts, 3)}')
+        for j in range(i, len(ysc)):
+            if(round(ysc[-1], 2) == 0):
+                if((ysc[j]<0.02) and (ysc[j]>-0.02)):
+                    tsc2[j] = tsc[j]
+                else:
+                    tsc2 = np.zeros(len(tsc))
+            else:
+                if((ysc[j]<ysc[-1]+0.02*ysc[-1]) and (ysc[j]>ysc[-1]-0.02*ysc[-1])):
+                    tsc2[j] = tsc[j]
+                else:
+                    tsc2 = np.zeros(len(tsc))
+        if(max(ysc) == ysc[0]):
+            if (ysc[i]==min(ysc)):
+                tpsc = tsc[i]
+                ypsc = ysc[i]
+        else:
+            if (ysc[i]==max(ysc)):
+                tpsc = tsc[i]
+                ypsc = ysc[i]
+    for i in range(0, len(tsc)):
+        if(tsc2[i]>0):
+            tssc = tsc2[i]
+            break
+    plt.axvline(tpsc, ls='-.', color='red', label=f'$t_p=${round(tpsc, 3)}\n$y_p=${round(ypsc, 3)}')
+    plt.axvline(tssc, ls='-.', color='blue', label=f'$t_s(2\%)=${round(tssc, 3)}')
     plt.title('Resposta ao Degrau Unitário de Malha Fechada sem Controlador')
     plt.xlabel('Tempo [s]')
     plt.axis([min(tsc), max(tsc), min(ysc), max(ysc)+0.05*max(ysc)])
