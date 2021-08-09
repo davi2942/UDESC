@@ -11,7 +11,7 @@ flag = 3 and selb=1 ->LR e bode (malha aberta) sem e com controlador mais bode d
 flag = 4 ->nyquist, sisotool, pzmap mais resposta ao degrau unitário de malha fechada com pr-e-filtro
 '''
 s = cm.tf('s')
-flag, selb = 2, 1
+flag, selb = 3, 1
 Gs, Cs, Hs = 100/(s*(s+5)*(s+8)), 4.48*(s+5), 1
 # Gs, Cs, Hs = 1/((s+1)*(s+10)), 69.49*(s+1)/s, 1
 # Gs, Cs, Hs = 200/((s+10)*(s+30)), (s+0.135)*(s+0.01), 1
@@ -28,7 +28,7 @@ print(f'GsHs={GHs}\tMalha aberta sem controlador\n\nGsHsCs={As}\tMalha aberta co
 print(f'Ganho_dc_T(s)={cm.dcgain(Ts)}\nPolos_T(s)={cm.pole(Ts)}\nZeros_T(s)={cm.zero(Ts)}')
 
 #Pré-Filtro
-Fs = s/(s+1)
+Fs = 5/(s+5)
 TsFs = Ts*Fs #Malha fechada com pré-filtro
 
 if (flag==1):
@@ -213,17 +213,73 @@ elif (flag==4):
     plt.figure()
     cm.nyquist(GHs) #nyquist - sem controlador
     plt.title('Nyquist')
+    
     plt.figure()
     cm.sisotool(As) #sisotool
+    
     plt.figure()
     cm.pzmap(TsFs) #pzmap malha fechada com pré-filtro
     plt.grid(True)
     plt.title('pzmap Malha Fechada com Pré-Filtro')
+    
     plt.figure()
     ypf, tpf = cm.step(TsFs) #resposta ao degrau unitário de malha fechada com pré-filtro
-    plt.plot(tpf, ypf)
+    plt.plot(tpf, ypf, label='$T(s).F(s)$', color='blue')
+    ymf, tmf = cm.step(Ts)
+    plt.plot(tmf, ymf, label='$T(s)$', color='orange') #resposta ao degrau unitário de malha fechada com controlador
     plt.grid(True)
+    tpf2 = np.zeros(len(tpf))
+    for i in range(0, len(ypf)):
+        for j in range(i, len(ypf)):
+            if(round(ypf[-1], 2) == 0):
+                if((ypf[j]<0.02) and (ypf[j]>-0.02)):
+                    tpf2[j] = tpf[j]
+                else:
+                    tpf2 = np.zeros(len(tpf))
+                if((ymf[j]<0.02) and (ymf[j]>-0.02)):
+                    tmf2[j] = tmf[j]
+                else:
+                    tmf2 = np.zeros(len(tmf))
+            else:
+                if((ypf[j]<ypf[-1]+0.02*ypf[-1]) and (ypf[j]>ypf[-1]-0.02*ypf[-1])):
+                    tpf2[j] = tpf[j]
+                else:
+                    tpf2 = np.zeros(len(tpf))
+                if((ymf[j]<ymf[-1]+0.02*ymf[-1]) and (ymf[j]>ymf[-1]-0.02*ymf[-1])):
+                    tmf2[j] = tmf[j]
+                else:
+                    tmf2 = np.zeros(len(tmf))
+        if(max(ypf) == ypf[0]):
+            if (ypf[i]==min(ypf)):
+                tppf = tpf[i]
+                yppf = ypf[i]
+        else:
+            if (ypf[i]==max(ypf)):
+                tppf = tpf[i]
+                yppf = ypf[i]
+        if(max(ymf) == ymf[0]):
+            if (ymf[i]==min(ymf)):
+                tpmf = tmf[i]
+                ypmf = ymf[i]
+        else:
+            if (ymf[i]==max(ymf)):
+                tpmf = tmf[i]
+                ypmf = ymf[i]
+    for i in range(0, len(tpf)):
+        if(tpf2[i]>0):
+            tspf = tpf2[i]
+            break
+    for i in range(0, len(tmf)):
+        if(tmf2[i]>0):
+            tsmf = tmf2[i]
+            break
+    plt.axvline(tppf, ls='--', color='blue', label=f'$t_p=${round(tppf, 3)}\n$y_p=${round(yppf, 3)}')
+    plt.axvline(tspf, ls='-.', color='blue', label=f'$t_s(2\%)=${round(tspf, 3)}')
+    plt.axvline(tpmf, ls='--', color='orange', label=f'$t_p=${round(tpmf, 3)}\n$y_p=${round(ypmf, 3)}')
+    plt.axvline(tsmf, ls='-.', color='orange', label=f'$t_s(2\%)=${round(tsmf, 3)}')
     plt.title('Resposta ao Degrau Unitário de Malha Fechada com Pré-Filtro')
     plt.xlabel('Tempo [s]')
+    plt.xlim([min(tpf), max(tpf)])
+    plt.legend()
 
 plt.show()
