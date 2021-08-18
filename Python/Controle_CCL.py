@@ -10,10 +10,10 @@ flag = 3 and selb = 0 ->LR sem e com controlador
 flag = 3 and selb = True ->LR e bode (malha aberta) sem e com controlador mais bode de malha fechada
 flag = 4 ->nyquist, pzmap mais resposta ao degrau unitário de malha fechada com pré-filtro
 flag = 4 and siso = True -> acrescenta o sisotool
-nyti = True = Apenas nyquist
+nyti = True = Apenas nyquist variando o ganho K de 1 até nk
 '''
 s = cm.tf('s')
-flag, selb, siso, nyti = 3, True, False, False
+flag, selb, siso, nyti, nk = 3, True, False, False, 10
 Gs, Cs, Hs = 100/(s*(s+5)*(s+8)), 4.48*(s+5), 1
 # Gs, Cs, Hs = 1/((s+1)*(s+10)), 69.49*(s+1)/s, 1
 # Gs, Cs, Hs = 200/((s+10)*(s+30)), (s+0.135)*(s+0.01), 1
@@ -214,9 +214,19 @@ elif (flag==3):
         plt.legend()
 elif flag==4:
     if nyti:
+        cor = list(('blue', 'red', 'orange', 'green', 'purple', 'black', 'yellow', 'gray', 'violet', 'silver'))
         plt.figure()
-        cm.nyquist(GHs) #nyquist - sem controlador
-        plt.title('Nyquist')
+        for k in range(1, nk+1):
+            re, imag, w = cm.nyquist(k*GHs, plot=False) #nyquist - sem controlador
+            plt.plot(re, imag, color=f'{cor[k-1]}', label=f'k={k}')
+            plt.plot(re, -imag, color=f'{cor[k-1]}')
+            plt.title('Nyquist')
+            plt.grid(True)
+            plt.xlabel('Real axis', size=11)
+            plt.ylabel('Imaginary axis', size=11)
+            plt.title('Nyquist')
+        plt.axvline(1, color='black', ls='--', label='Real=1')
+        plt.legend()
     
     else:
         plt.figure()
